@@ -1,0 +1,80 @@
+
+Zed - text/programmer's editor.
+
+REQUIREMENTS
+************
+ - You have to use gnu gcc, gnu make and gnu install.
+
+BUILDING
+********
+ - Edit Makefile to select your system optimizations&simila
+ - "make"
+ - now you have two executables: "zed" for terminal mode, "zedx" for X11 mode.
+
+INSTALL
+*******
+ - "make -n install" to see what it'll do
+ - "make install" if you like it :)
+
+ - if you want to customize configurations, copy the config files in your home
+   directory as .zedrc and .zedxrc; if zed'll found error(s) in they,
+   it'll revert to the copy in /etc or /usr/local/etc.
+ - the default configuration for zed (cfg/zedrc, terminal mode) works with
+   LINUX in a LOCAL console and use a trick to retrieve shift status throw
+   linux's kernel. If this isn't your case, use the reduced version of
+   the configuration file (cfg/zedrc.xterm) or use X11 version (zedx).
+   Using the reduced version you'll loose some nice things, like mark a block
+   with shift-arrow, but it'll work in every ansi/vt100 terminal.
+ - you can configure almost ALL, please read zed.doc.
+
+VERY FAST DEMO
+**************
+ - look at zed.png
+
+MAJOR FEATURES
+**************
+
+ - Can use ANY keysequence (e.g. define a block with shift-arrow)
+   even under unix local text terminal (linux).
+ - intelligent screen update (NOT using the slow (n)curses).
+ - Column blocks with insert & overwrite.
+ - multi window/multi buffer.
+ - color c++, html, tex, java, mail file.
+ - shows parenthesis matching, searches for C functions, reindents C blocks.
+ - about 200 commands and 100 variables to deal with.
+ - Can edit/insert control codes (ascii 0-31 and 128-159).
+ - executes programs with output redirected on a window (i.e. make, man, etc...).
+ - Can load files with CRLF and/or CR and/or LF end-of-line marker.
+ - clipboard and delete buffer.
+ - savable run-time macros.
+ - simple and powerful configuration system.
+ - easy document mode, almost ascii.
+ - automatic wordwrap and reformat, even inside quoted line within a e-mail file.
+ - small, fast, powerful, low cpu consumer.
+ - hexdump-like mode to edit binary file.
+ - You can go everywhere with the cursor
+ - Internal, fast file selector.
+ - all that you'll find.
+
+ - I'm working in a new version of zed, with many improvements,
+    but I don't know when I'll release it.
+
+WHERE ZED WORKS
+***************
+ Zed is known to works well on:
+ Linux, HPUX, SunOS, AIX.
+ Reported to work under Irix.
+
+HOW TO CONTACT THE AUTHOR
+*************************
+ For suggestions, contributions, bug reports (aka undocumented features),
+ happy users reports:
+ e-mail: zed@iam.it
+ WWW:    http://zed.iam.it
+
+ACKNOWLEDGEMENTS
+****************
+ I would like to thank all those people who has helped me testing Zed. THANKS!
+
+ A good free program from Vicenza, Italy!
+

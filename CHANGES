@@ -1,0 +1,20 @@
+Version 1.0.5
+
+- Changed my email & zed's web page
+- Changed backspace and delete default configuration
+- a few changes to make egcs happy
+
+Version 1.0.3
+
+- fixed a bug in f_filesb
+- fixed a few little bugs
++ added rot13 encription
+
+Version 1.0.2
+
+- just a little bugfix in displaying the file selector in text mode.
+
+Version 1.0.1
+
+This is the first released version of Zed.
+

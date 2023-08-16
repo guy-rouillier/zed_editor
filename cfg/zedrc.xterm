@@ -1,0 +1,426 @@
+;*
+;**** Zed - REDUCED configuration file for remote-terminal and color-xterm/rxvt
+;*
+;*  ^=control key, #=shift key, @=alt key
+
+set ansi 3              ; Use terminal scroll. Remove this if terminal
+                        ;  does not support scrolled window
+set indcfg 0x111
+
+;*
+;* ***** Cursor movement *****
+;*
+
+key \1B&t    e_escape   ; Esc     - escape command
+
+key \u1B[B   c_down     ; Down ;*  Arrows - move cursor
+key \u1B[A   c_up       ; Up
+key \u1B[C   c_right    ; Right
+key \u1B[D   c_left     ; Left
+
+key \u1B[6\u7E p_down   ;*  PgDn   - move cursor down one page
+key \u1B[5\u7E p_up     ;*  PgUp   - move cursor up one page
+key \u1B[4\u7E g_eol    ;*  End    - goto end of line
+key \u1B[1\u7E g_sol    ;*  Home   - goto start of line
+
+key \u11\u13 g_sol       ;*  ^Q^S   - goto start of line
+key \u11\u04 g_eol       ;*  ^Q^D   - goto end of line
+key \u11\u05 g_sos       ;*  ^Q^E   - goto start of screen
+key \u11\u18 g_eos       ;*  ^Q^X   - goto end of screen
+key \u11\u12 g_sof       ;*  ^Q^R   - goto start of file
+key \u11\u03 g_eof       ;*  ^Q^C   - goto end of file
+key \u11\u02 g_sob       ;*  ^Q^B   - goto start of block
+key \u11\u0B g_eob       ;*  ^Q^K   - goto end of block
+key \u11\u14 g_c2sos     ;*  ^Q^T   - current to start of screen
+key \u11\u16 g_c2eos     ;*  ^Q^V   - current to end of screen
+key \u11\u07 g_c2mos     ;*  ^Q^G   - current to middle of screen
+key \u11\u0C g_line      ;*  ^Q^L   - goto line #
+key \u11\u5B g_parent    ;*  ^Q [   - goto parenthesis
+key \u11\u5D g_parent    ;*  ^Q ]   - goto parenthesis
+key \u11\u15 g_function  ;*  ^Q^U   - goto C function
+key \u0B0    g_set0      ;*  ^K 0   - set mark 0
+key \u0B1    g_set1      ;*  ^K 1   - set mark 1
+key \u0B2    g_set2      ;*  ^K 2   - set mark 2
+key \u0B3    g_set3      ;*  ^K 3   - set mark 3
+key \u110    g_go0       ;*  ^Q 0   - goto mark 0
+key \u111    g_go1       ;*  ^Q 1   - goto mark 1
+key \u112    g_go2       ;*  ^Q 2   - goto mark 2
+key \u113    g_go3       ;*  ^Q 3   - goto mark 3
+key \u1B[21\u7E  g_menu  ;*  F10    - menu
+key \u1B[11\u7E f_select "<h" e_enter ;*  F1     - open help window
+
+key \u1B[5^  g_sof        ;*  ^PgUp  - goto start of file
+key \u1B[6^  g_eof        ;*  ^PgDn  - goto end of file
+key \u1B[1^  g_sos        ;*  ^Home  - goto start of screen
+key \u1B[4^  g_eos        ;*  ^End   - goto end of screen
+key \u1BOd   g_pwr        ;*  ^Left  - goto previus word
+key \u1BOc   g_nwr        ;*  ^Right - goto next word
+key \u1BOa   g_sdown      ;*  ^Up    - scroll down
+key \u1BOb   g_sup        ;*  ^Down  - scroll up
+
+; block extension by cursor
+
+key \u1B[b     b_setpnt c_down  b_cresize ; #Down
+key \u1B[a     b_setpnt c_up    b_cresize ; #Up
+key \u1B[c     b_setpnt c_right b_cresize ; #Right
+key \u1B[d     b_setpnt c_left  b_cresize ; #Left
+key \u1B[6$    b_setpnt p_down  b_cresize ; #PgDn
+key \u1B[5$    b_setpnt p_up    b_cresize ; #PgUp
+key \u1B[4$    b_setpnt g_eol   b_cresize ; #End
+key \u1B[1$    b_setpnt g_sol   b_cresize ; #Home
+
+;*
+;* ***** Editing *****
+;*
+
+key \u7F       e_canc    ;*  Canc   - delete character under the cursor
+key \u1B[3\u7E e_canc    ; canc keypad
+key \u08       e_bkspc   ;*  BackSpace - delete character at the left of the cursor
+key \u0d       e_enter   ; Enter
+key \u19       e_delline ;*  ^Y     - delete row
+key \u1B[2\u7E l_instog  ;*  Ins    - toggle insert/overwrite mode
+
+key \u0B\u04   e_deleol  ;*  ^K^D   - delete from cursor to EOL
+key \u0B\u0A   e_restore ;*  ^K^J   - restore line
+key \u0B\u15   b_resdelb ;*  ^K^U   - unerase line
+key \u0B\u14   f_killtab ;*  ^K^T   - kill all tab in current file
+
+key \u03\u03   e_putcode ;*  ^C^C   - insert coded codes (enter ends)
+key \u03\u09   e_inscode ;*  ^C^I   - insert codes (enter ends)
+key \u03\u08   e_hexcode ;*  ^C^H   - insert hex code(s)
+
+key \u1B1      e_toupper  ;*  @1     - char toupperer
+key \u1B2      e_tolower  ;*  @2     - char tolowerer
+key \u1B3      e_flipcase ;*  @3     - char flip casese
+key \u11\u10   l_autosave ;*  ^Q^P   - set autosavesave
+key \u1F       e_deind    ;*  ^BackSpace - deindent row
+
+;*
+;* ***** File Selector *****
+;*
+
+key \u01  e_openall ;*  ^A     - open all files
+key \u0e  e_hexopen ;*  ^N     - open file in binary mode
+key \u14  e_roopen  ;*  ^T     - open file in readonly mode
+;*  <C     - select the clipboard
+;*  <D     - select the delete buffer
+;*  <E     - select the system-wide configuration
+;*  <G     - select the local configuration
+;*  <H     - create the help
+;*  <I     - select one of the buffer not visualized
+
+;*
+;* ***** Macro *****
+;*
+
+key \u13\u13 e_stmacro  ;*  ^S^S   - start macro
+key \u13\u12 e_recmacro ;*  ^S^R   - record macro
+key \u13\u01 e_abmacro  ;*  ^S^A   - abort macro
+key \u13\u17 e_wrmacro  ;*  ^S^W   - write macro
+
+;*
+;* ***** File/Window *****
+;*
+
+key \u1b[[B      f_savefile   ;*  F2     - save file
+key \u1B[12\u7E  f_savefile   ;*  F2     - save file
+key \u0B\u13 f_savefile   ;*  ^K^S   - save file
+key \u06\u13 f_savefile   ;*  ^F^S   - save file
+key \u06\u14 f_saveall    ;*  ^F^T   - save all file
+key \u0B\u18 f_savefile  w_qquit  ;*  ^K^X   - save/exit single file
+key \u0B\u1A f_savemodif w_qquita ;*  ^K^Z   - saveall/exitall
+
+key \u1B[[C      f_fileld     ;*  F3     - open file
+key \u1B[13\u7E  f_fileld     ;*  F3     - open file
+key \u06\u0F f_fileld     ;*  ^F^O   - open file
+key \u06\u15 f_filesb     ;*  ^F^U   - file substitution
+key \u0B\u11 w_qquit      ;*  ^K^Q   - query quit
+key \u06\u12 f_qreload    ;*  ^F^R   - file reopen with query
+
+key \u0B\u05 f_chname     ;*  ^K^E   - change filename
+key \u06\u05 f_chname     ;*  ^F^E   - change filename
+key \u11\u11 w_qquita     ;*  ^Q^Q   - quit all with query
+key \u06\u0E w_bufnext    ;*  ^F^N   - select next buffer
+key \u06\u10 w_bufprev    ;*  ^F^P   - select previous buffer
+key \u06\u0D w_bufsel     ;*  ^F^M   - select buffer
+
+key \u1B[[E w_zoom        ;*  F5     - zoom/unzoom window
+key \u1B[15\u7E w_zoom    ;*  F5     - zoom/unzoom window
+key \u17\u1A w_zoom       ;*  ^W^Z   - zoom/unzoom window
+key \u17\u15 w_zoomq      ;*  ^W^U   - set unique window/buffer
+key \u17\u08 w_hide       ;*  ^W^H   - window hide
+
+key \u17\u13 w_split      ;*  ^W^S   - split window & ask filename to load
+key \u17\u12 w_winres     ;*  ^W^R   - resize window
+key \u17\u0E w_winnext    ;*  ^W^N   - select next window
+key \u17\u10 w_winprev    ;*  ^W^P   - select previous window
+
+key \u03\u12 f_cconfig    ;*  ^C^R   - reload config file
+key \u03\u01 f_aconfig    ;*  ^C^A   - add file to config
+
+key \u1B\u78  w_qquita    ;*  @X     - quit all with query
+key \u1B\u30  w_bufsel    ;*  @0     - select buffer
+key \u1B\u66d f_shell e_enter e_enter  ;*  @F D   - os shell
+key \u1B\u66o f_shell     ;*  @F O   - os shell with parameter
+
+;*
+;* ***** Search/Replace *****
+;*
+
+key \u11\u06 s_search     ;*  ^Q^F   - start search
+key \u11\u01 s_replace    ;*  ^Q^A   - start replace
+key \u11\u09 s_isearch    ;*  ^Q^I   - start interactive search
+key \u0C       s_sagain   ;*  ^L     - redo search/replace
+
+;*
+;* ***** Block *****
+;*
+
+;*  #cursor_movement - create/extend block
+
+key \u0B\u02 b_begin     ;*  ^K^B   - set start of block
+key \u0B\u0B b_end       ;*  ^K^K   - set end of block
+key \u0B\u0E b_toggle    ;*  ^K^N   - toggle column/normal block type
+key \u0B\u08 b_hide      ;*  ^K^H   - hide/unhide block
+key \u0B\u0C b_ldrag     ;*  ^K^L   - drag mode line on/off
+key \u0B\u01 b_cdrag     ;*  ^K^A   - drag mode char on/off
+key \u0B\u19 b_blockdel  ;*  ^K^Y   - block delete
+key \u0B\u03 b_clphere b_clpcopy b_clppstd b_clpzero ;*  ^K^C   - copy block
+key \u0B\u16 b_clphere b_clpcut  b_clppstd b_clpzero ;*  ^K^V   - move block
+key \u0B\u12 b_clpdel b_clpload e_entwait b_clppstd  ;*  ^K^R   - block read
+key \u0B\u17 b_clpdel b_clpcopy b_clpsave e_entwait b_clpdel ;*  ^K^W   - block write
+key \u0B\u06 b_fill      ;*  ^K^F   - block fill
+key \u0B\u09 b_indent    ;*  ^K^I   - indent C block
+key \u1B\u1B[C     b_shr ;*  @right - block shift right
+key \u1B\u1B[D     b_shl ;*  @left  - block shift left
+
+key \u0B\u10       b_clpdel           ;*  ^K^P   - delete clipboard
+key \u1B[2^        b_clpdel b_clpcopy ;*  ^Ins   - clip copy
+key \u1B\u1B[2\u7E b_clpcopy          ;*  @Ins   - clip copy/add
+key \u1B[2$        b_clppaste         ;*  #Ins   - clip paste
+
+;*
+;* ***** Document mode *****
+;*
+
+key \u1B\u5B\w0441 g_prevpar ;*  @up    - goto previous paragraph
+key \u1B\u5B\w0442 g_nextpar ;*  @down  - goto next paragraph
+key \u0F\u12 j_rmargin       ;*  ^O^R   - set right margin
+key \u0F\u0C j_lmargin       ;*  ^O^L   - set left margin
+key \u0F\u09 j_indent        ;*  ^O^I   - set first row indent
+key \u0F\u01 j_soft          ;*  ^O^A   - transform return in soft return
+key \u0F\u08 j_hard          ;*  ^O^H   - transform return in hard return
+key \u0F\u10 j_allhard       ;*  ^O^P   - transform all return in hard return
+key \u02 j_soft c_down       ;*  ^B     - add line to paragraph
+key \u0F\u02 j_soft c_down   ;*  ^O^B   - add line to paragraph
+key \u0F\u03 j_center        ;*  ^O^C   - center row
+key \u0F\u04 j_right         ;*  ^O^D   - align row to right
+key \u0F\u13 j_left          ;*  ^O^S   - align row to left
+key \u0F\u06 j_format        ;*  ^O^F   - format row
+key \u0F\u0A j_justif        ;*  ^O^J   - justify row
+key \u0F\u0B j_dejust        ;*  ^O^K   - de-justify row
+key \u0F\u0F l_doctog        ;*  ^O^O   - toggle document mode on/off
+key \u0F\u07 j_block2par     ;*  ^O^G   - create a paragraph within block
+key \u12 j_quoterem j_dejust j_format j_justif j_quoteres ;*  ^R     - re-format paragraph
+
+;*
+;* ***** Special File Selectors *****
+;*
+
+;*  <C     - select the clipboard
+;*  <D     - select the delete buffer
+;*  <E     - select the system-wide configuration
+;*  <G     - select the local configuration
+;*  <H     - create the help
+;*  <I     - select one of the buffer not visualized
+
+;*
+;* ***** Symbols for OS shell *****
+;*
+
+;*  %t : path of the current file
+;*  %f : name of the current file (without path and extension)
+;*  %e : extension of the current file
+;*  %n : complete name of the file (without path)
+;*  %w : word where the cursor was.
+;*  %v : as %w but of the previous window (saved with w_winsave)
+;*  %p : pause before return to Zed
+;*  %r : pause before return to zed if the shell returns an error
+;*  %s : save all modified buffers before executing the shell
+;*  %k : as %s but when the shell terminates execution, all modified files are
+;*       reloaded. Not usable with %i or %a.
+;*  %x : write "Type exit to return to Zed" before executing the shell
+;*  %i : stdout and stderr of the command executed are redirected throw a pipe
+;*       in the current buffer. This is erased before the execution of the
+;*       shell.
+;*  %a : as %i, but the buffer is not erased (append)
+;*  %o : executes the command in background (UNIX only)
+;*  %d : drive of the current file (MS-DOS only)
+
+; *********************************************************************
+; *********************************************************************
+; *********************************************************************
+
+; macro per la tastiera italiana (macros for italian keyboard)
+
+key \u1Bk "{"  ; @k
+key \u1Bl "}"  ; @l
+
+;*
+
+menu *File
+ menu *Load
+  item new_*Buffer  f_fileld
+  item new_*Window  w_split
+  item *Reload      f_qreload
+  item same_b*Uffer f_filesb
+ endmenu
+ menu *Save
+  item *File  f_savefile
+  item *All   f_saveall
+  item save/*Quit  f_savefile w_qquit
+  item change_*Name f_chname
+ endmenu
+ menu close/*Quit
+  item quit_*File  w_qquit
+  item save/*Quit  f_savefile w_qquit
+  item quit_*All   w_qquita
+ endmenu
+ menu os_shell
+  item shell f_shell e_enter e_enter
+ endmenu
+endmenu
+menu *Buffer
+ item *Next     w_bufnext
+ item *Previous w_bufprev
+ item *Select   w_bufsel
+ item close_*Others w_zoomq
+endmenu
+menu *Window
+ item *Zoom/unzoom w_zoom
+ item *Hide        w_hide
+ item *Split       w_split
+ item *Resize      w_winres
+ item *Next        w_winnext
+ item *Previous    w_winprev
+endmenu
+menu *Goto
+ item start_of_line g_sol
+ item end_of_line   g_eol
+ item start_of_screen g_sos
+ item end_of_screen g_eos
+ item start_of_file g_sof
+ item end_of_file g_eof
+ item start_of_block g_sob
+ item end_of_block g_eob
+ item line_# g_line
+ item *Parentesis g_parent
+ item *C_function g_function
+ item previous_paragraph g_prevpar
+ item next_paragraph g_nextpar
+ item mark_0 g_go0
+ item mark_1 g_go1
+ item mark_2 g_go2
+ item mark_3 g_go3
+ item set_mark_0 g_set0
+ item set_mark_1 g_set1
+ item set_mark_2 g_set2
+ item set_mark_3 g_set3
+endmenu
+menu *Scroll
+ item current_to_start_of_screen g_c2sos
+ item current_to_end_of_screen g_c2eos
+ item current_to_middle_of_screen g_c2mos
+ item scroll_up g_sup
+ item scroll_down g_sdown
+endmenu
+menu *Editing
+ item *Delete_line e_delline
+ item delete_to_*Eol e_deleol
+ item *Restore_line e_restore
+ item *Unerase_line b_resdelb
+ item insert_*Coded e_putcode
+ item insert_c*Ode  e_inscode
+ item insert_*Hex   e_hexcode
+ item de*Indent e_deind
+ item char_to*Upper e_toupper
+ item char_to*Lower e_tolower
+ item char_*Flipcase e_flipcase
+ menu *Search
+  item *Search s_search
+  item *Interactive s_isearch
+  item *Replace s_replace
+  item redo_*Last s_sagain
+ endmenu
+ menu *Macro
+  item *Start e_stmacro
+  item *Record e_recmacro
+  item *Abort e_abmacro
+  item *Write_to_file e_wrmacro
+  item *Reload_config_file f_cconfig
+ endmenu
+ menu *Block
+  item set_*Begin b_begin
+  item set_*End   b_end
+  item toggle_*Type b_toggle
+  item *Hide b_hide
+  item drag_line b_ldrag
+  item drag_char b_cdrag
+  item *Delete b_blockdel
+  item *Copy b_clphere b_clpcopy b_clppstd b_clpzero
+  item *Move b_clphere b_clpcut  b_clppstd b_clpzero
+  item *Read b_clpdel b_clpload e_entwait b_clppstd
+  item *Write b_clpdel b_clpcopy b_clpsave e_entwait b_clpdel
+  item *Fill b_fill
+  item c_*Indent b_indent
+  item shift_*Right b_shr
+  item shift_*Left b_shl
+  item to*Upper b_toupper
+  item tolo*Wer b_tolower
+  item fli*P_case b_flipcase
+  menu clipb*Oard
+   item *Delete b_clpdel
+   item *Save   b_clpsave
+   item *Load   b_clpload
+   item set_*Begin b_clphere
+   item set_*Real_start b_clpzero
+   item *Copy_to b_clpcopy
+   item c*Ut_to b_clpcut
+   item *Paste_from b_clppaste
+   item p*Aste_del b_clppstd
+  endmenu
+ endmenu
+endmenu
+menu *Document
+ menu *Set_margin
+  item *Right j_rmargin
+  item *Left j_lmargin
+  item *Indent j_indent
+ endmenu
+ item ret_to_*Ghost j_soft
+ item ret_to_*True j_hard
+ item *All_true j_allhard
+ item add_*Line j_soft c_down
+ menu *Alignment
+  item *Center_row j_center
+  item *Right_row j_right
+  item *Left_row j_left
+ endmenu
+ item *Format_row j_format
+ item *Justify_row j_justif
+ item *Dejusttify j_dejust
+ item *Rejust_paragraph j_dejust j_format j_justif
+endmenu
+menu *C_program
+ item *Block_indent b_indent
+ item *Goto_function g_function
+ item #*Include g_sol e_enter c_up "#include <>" c_left
+ item *Comment g_sol e_enter c_up \
+           "/**********************************" \
+           "*****************************************/" c_down g_sol
+ item *Unsigned "unsigned"
+ item *Void "void"
+ item *Make f_savemodif w_winsave w_split "errs" e_enter \
+           f_shell "make" e_enter "%i" e_enter w_wingoto
+endmenu
+

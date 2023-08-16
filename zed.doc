@@ -1,0 +1,1261 @@
+-------------------------------------------------------------------------------
+
+                   ZedZedZedZedZedZedZedZedZedZedZedZedZed
+                  Z                                       Z
+                  e ZZZZZZZZZZZZZZZ                       e
+                  d ZZZZZZZZZZZZZZZ                  ddd  d
+                  Z            ZZZ                    dd  Z
+                  e           ZZZ                     dd  e
+                  d          ZZZ                      dd  d
+                  Z         ZZZ        eeeeee         dd  Z
+                  e        ZZZ        eeeeeeee        dd  e
+                  d       ZZZ         ee    ee   ddddddd  d
+                  Z      ZZZ          ee    ee  dddddddd  Z
+                  e     ZZZ           eeeeeeee  dd    dd  e
+                  d    ZZZ            eeeeeee   dd    dd  d
+                  Z   ZZZ             ee        dd    dd  Z
+                  e  ZZZ              ee        dd    dd  e
+                  d ZZZZZZZZZZZZZZZ   eeeeeeee  dddddddd  d
+                  Z ZZZZZZZZZZZZZZZ    eeeeee    ddddd dd Z
+                  e                                       e
+                  d                                       d
+                   ZedZedZedZedZedZedZedZedZedZedZedZedZed
+
+                                 Ver. 1.0.5
+
+                          Written by: Sandro Serafini
+
+********************************************************************************
+
+What you need to execute Zed
+
+    Zed needs a configuration file where the associations  between  keystrokes 
+ and internal  functions  are  defined  and  internal  variables  are  set  to 
+ customize Zed's behaviour.
+
+    UNIX: The default configuration file name is $HOME/.zed(x)rc ('zedrc'  for 
+ terminal version (zed), 'zedxrc' for X-Window version (zedx).  If  this  file 
+ is  missing  or  if  it  contains  error(s),  zed   will   load   system-wide 
+ configuration   /etc/zed(x)rc   or,   in    case    this    doesn't    exist, 
+ /usr/local/etc/zed(x)rc. If even this file fails, zed will exit with error.
+
+    MSDOS: The configuration file is searched  as  zed.cfg  in  the  directory 
+ where zed.exe is. If this file is missing or it contains error(s),  zed  will 
+ try to load zed.std in the same directory. If even this file fails, zed  will 
+ exit with error.
+
+******************************************************************************
+
+Configuration file format and commands.
+
+This section describes the commands used in the configuration file.
+All commands name can be both upper or lower case.
+Characters after ';' are ignored.
+One line can be continued appending '\' as last character.
+
+Available Commands:
+
+endmenu
+  ends the definition of a menu or a submenu. This command must  be  preceeded 
+  by a "menu" command.
+
+error "String"
+  display "String" then exit with error.
+
+ifterm list_of_terminals
+  Commands_1
+[else
+  Commands_2]
+endif
+
+    If the content of  the  environment  variable  TERM  is  included  in  the 
+ list_of_terminals, Commands_1 are executed, else Commands_2 are executed.
+
+include Configuration_File
+  'Configuration_File' is read before current file (but after other preceeding 
+  included files).
+
+item name [functions | "Strings"]
+ defines an item of the current menu, associating the  name  "name"  with  the 
+ macro that follow. An "*" within "name" indicates  that  the  next  character 
+ will be used as a short-cut for the keyboard. All "_" within "name"  will  be 
+ replaced with  spaces.  This  command  must  be  placed  between  "menu"  and 
+ "endmenu" commands.
+
+key Key_sequence [Functions | "Strings"]
+ Associates Key_sequence with a  list  of  functions  to  be  executed  and/or 
+ strings to be inserted. Zed includes a fast  method  to  write  key_sequence; 
+ this is the use of the e_putcode function  associated  by  default  with  the 
+ sequence ^C^C. To use it simply type ^C^C,  then  type  the  sequence  to  be 
+ defined followed by Enter. If you  want  to  insert  the  enter  key  in  the 
+ sequence, you must type its control code, that is \wff0d  under  x-window  or 
+ \u0d otherwise. With this method you can define any sequence your system  can 
+ recognize (for example, you cannot define shift-arrows under a text  terminal 
+ even if under linux-local-terminal you CAN!).
+
+  At the end of Key_sequence you can append the character '&' followed by  the 
+  following flag characters:
+
+    a : the sequence is recognized if the flag 'a' is active.
+    A : the sequence is recognized if the flag 'a' is not active.
+    b : the sequence is recognized if the flag 'b' is active.
+    B : the sequence is recognized if the flag 'b' is not active.
+    c : the sequence is recognized if the flag 'c' is active.
+    C : the sequence is recognized if the flag 'c' is not active.
+    d : the sequence is recognized if the flag 'd' is active.
+    D : the sequence is recognized if the flag 'd' is not active.
+    t : the sequence is recognized if no other character is available 
+    within a defined timeout (variable 'delay').
+
+ The a, b, c, d flags can  be  modified  by  the  functions:  l_setb,  l_setc, 
+ l_setd, l_toga, l_togb, l_togc, l_togd (v.).
+
+  Examples:
+
+    key \u1B[A c_up
+ assigns to the sequence ESC[A (ansi terminal  up  arrow)  the  function  c_up 
+ (zed internal function to move the cursor up one line). "\u1B[A"  is  written 
+ by Zed itself using e_putcode function.
+
+    key \w020B\w0203 b_clphere b_clpcopy b_clppstd b_clpzero
+ assigns to the sequence ^K^C a list of functions (macro) that implements  the 
+ copy of a block through the clipboard.
+
+    key \u1B&t  e_escape
+ assigns to the character  escape  the  Zed  function  e_escape.  "&t"  option 
+ permits to distinguish the key "Esc" from other composite-code key.
+
+ Once you have defined a sequence followed by any  flags,  you  should  always 
+ append the proper flags when using that sequence.
+
+ Examples of invalid  definitions  using  flags:
+
+ The following definitions are NOT valid, because in the first line  there  is 
+ a flag status not specified in the second:
+
+    key \u1B[A&a ...
+    key \u1B[A   ...
+
+ Valid definitions are:
+
+    key \u1B[A&a ...
+    key \u1B[A&A ...
+
+  Zed with X-Window and mouse:
+ The mouse under X-window is "emulated" with  several  codes  similar  to  the 
+ code resulting from keystokes:
+ The codes are written in the following format:
+
+    \TT111ABC
+
+  where:
+    TT : state of Shift, Control, Meta, Alt, ecc... keys, as returned by 
+         X-window.
+    A  : Position of the mouse's cursor:
+         0 : outside the current zed window
+         1 : inside  the current zed window
+         2 : over the status (left) part of the status-bar of the current zed 
+             window
+         3 : over the filename in the status bar of the current zed window
+         4 : inside  a selection menu
+         5 : outside a selection menu
+         6 : outside a selection menu on its right side
+         7 : outside a selection menu on its top side
+         8 : inside  a dialog window
+         9 : outside a dialog window
+
+    B  : movement of the mouse cursor (with a button pressed):
+         0 : button pressed
+         1 : start of movement
+         2 : during the movement (dragging)
+         3 : end of movement
+         4 : button released
+         5 : button released without movement
+
+ Note: Normally a mouse movement with a pressed button sends a '0', a  '1',  a 
+ sequence of '2', then '3' and '4'. A simple single  "click"  sends  '0'  then 
+ '5'. (You can consider only the code useful to you).
+
+    C  : number of the button pressed (from 1 to 5)
+
+menu name
+ starts the definition of a menu or a submenu  named  "name".  An  "*"  within 
+ "name" indicates that the next character will be used as a short-cut for  the 
+ keyboard. All "_" within "name" will be replaced with  spaces.  This  command 
+ must be followed by "item" or other "menu" commands;  at  the  end,  use  the 
+ "endmenu" command.
+
+pause
+  prints the string "Press a key" then waits for a key to be pressed.
+
+print "String"
+  prints "String"
+
+set Variable Value
+ Assigns the value "Value" to the zed variable "Variable". "Value" may  be  an 
+ integer, a string (for string-type variables), "on" (equivalent  to  "1")  or 
+ "off" (equivalent to "0"). If more than one "set" assigns a value to the same 
+ variable (e.g. with included file),  only  the  first  assignment  will  have 
+ effect.
+
+  Examples:
+    set doc on       ; start with document mode enabled
+    set lmargin 2    ; defines left margin (for document mode) to 2
+    set streof "<<< End Of File >>>" ; sets the string shown at the eof.
+
+Strings format:
+
+ Strings, within a macro, define a sequence of characters to  be  inserted  in 
+ the text or in a zed's dialog box. These strings  are  included  between  two 
+ '"' and may contain the following sequences:
+
+  \uhh      : a character with hexadecimal code hh (two digit).
+  \\        : character '\'
+  \;        : character ';'
+  \"        : character '"'
+
+******************************************************************************
+
+Zed Variables:
+
+********************
+
+Zed Colors:
+
+colblock [value(=0x70)]
+  color of the selected block
+
+colbpara [value(=0x73)]
+  color of the current paragraph within a selected block (document mode)
+
+colcode [value(=0x5f)]
+  color of special character (ASCII codes from 0 to 31 and from 127 to 255, 
+  normally not displayable).
+
+colcurr [value(=0x0F)]
+  color of the current row
+
+colcurrblk [value(=0x7F)]
+  color of the current row within a selected block
+
+colcurrsel [value(=0x0F)]
+  color of the current row within a selection box
+
+coldialog [value(=0x05)]
+  color of the frame of the dialog box
+
+coleof [value(=0x04)]
+  color of the row indicating the "end of file"
+
+colerror [value(=0x04)]
+  color of the error message
+
+colfndtext [value(=0x1f)]
+  color of the text found after a search
+
+colmatch [value(=0x0a)]
+  color of the matching parenthesis (variable showmatch set on)
+
+colpara [value(=0x03)]
+  color of the current paragraph (document mode)
+
+colparam [value(=0x17)]
+  color of the default parameter of search/substitute functions
+
+colsel [value(=0x07)]
+  color of the text within a selection box
+
+colselect [value(=0x02)]
+  color of the frame of the selection box
+
+colstatus [value(=0x1a)]
+  color of the status row
+
+coltext [value(=0x07)]
+  color of the normal text
+
+colwarning [value(=0x02)]
+  color of the warnings
+
+********************
+
+Zed Color for C++ sources:
+
+  Special color 0x00 means to leave color assigned by coltext and colcurr.
+
+colcomment [value(=0x06]
+  color of the comments
+
+colpreprocessor [value(=0x02)]
+  color of the preprocessor command
+
+colsymbol [value(=0x00)]
+  color of the symbols
+
+colidentifier [value(=0x0e)]
+  color of the identifiers
+
+coldecimal [value(=0x03)]
+  color of the integer base 10 constants
+
+colesadecimal [value(=0x03)]
+  color of the integer base 16 constants
+
+coloctal [value(=0x05)]
+  color of the integer base 8 constants
+
+colfloat [value(=0x03)]
+  color of the floating point constants
+
+colstring [value(=0x03)]
+  color of the string constants
+
+colchar [value(=0x03)]
+  color of the character constants
+
+colerror [value(=0x04)]
+  color of the errors
+
+colreserved [value(=0x00)]
+  color of the reserved keywords
+
+********************
+
+Zed Color for HTML files:
+
+colhtmlcmd [value(=0x05)]
+  color of the commands
+
+colhtmlpar [value(=0x06)]
+  color of the parameters
+
+colhtmlcon [value(=0x03)]
+  color of the constants assigned to the parameters
+
+********************
+
+Zed Color for TEX files:
+
+coltexcomm [value(=0x06)]
+  color of the comments
+
+coltexmath [value(=0x0e)]
+  color of the math mode text
+
+coltexcmd [value(=0x03)]
+  color of the commands
+
+********************
+
+Zed Color for MAIL files:
+
+colmailqt [value(=0x0e)]
+    color of the quoted row (they are recognised from the presence  of  a  '>' 
+ within the first six characters)
+
+colmailctl [value(=0x02)]
+  color of the control row (starts with a ascii 01)
+
+colmailtag [value(=0x0f)]
+  color of the tagline (starts with "...")
+
+colmailtear [value(=0x06)]
+  color of the tearline (starts with "---")
+
+colmailori [value(=0x05)]
+  color of the origins (starts with " * Origin:")
+
+********************
+
+Other variables:
+
+ansi [on|OFF] [1|2|3]
+ MS-DOS:
+  enable/disable input/output of Zed in ANSI format through stdin/stdout 
+  instead of direct access.
+ UNIX:
+  select the terminal type:
+  1: color normal VT100
+  2: monocrome normal VT100
+  3: color linux terminal (VT100+window scroll)
+
+autosave [value(=0)]
+ Set the timeout in seconds after which the file will be automatically saved. 
+ The timer starts at every modification of the file being edited.  If  set  to 
+ 0, the function is disabled.
+
+bak [on|OFF]
+  enable/disable the creation of the back-up file when a file is saved.
+  The name of the back-up file is:
+    UNIX  : the name of the file with appended a '~'
+    MS-DOS: the name of the file with the extension .BAK
+
+colormode [value(=1)]
+  define the file color mode as:
+  0: disable the color
+  1: enable the color and use the extension of the pathfilename to
+     decide which color mode to use:
+     *.c *.cc *.cpp *.C *.h : C++
+     *.html :  HTML
+     *.tex : TEX
+     *.java: JAVA
+     *(strmail)* : MAIL (the pathname contains the string specified with the
+                   zed variable "strmail").
+  2: force C++ mode
+  3: force HTML mode
+  4: force TEX mode
+  5: force MAIL mode
+  6: force JAVA mode
+ Enabling colormode, showtab and nospace are automatically enabled.
+
+coltoscroll [value(=5)]
+  number of columns to scroll orizzontally when requested.
+
+columns [value(=0)]
+  number of columns of the screen. With the special value 0 Zed will 
+  determine it automatically.
+
+delay [value(=100)]
+  time in milliseconds for the "&c" key sequence option.
+
+display [string(="")] (ZEDX)
+  string that defines the X-window display to be used.
+
+doc [on|off|2]
+ enable/disable the document mode. Enabling document mode showtab and  nospace 
+ are automatically enabled. Setting this  variable  to  2  (default),  if  the 
+ filename ends with ".doc" or  the  file  is  opened  with  mail  color  mode, 
+ document mode will automatically be activated.
+
+font [string(="9x15")] (ZEDX)
+  define the font to be used. It must be non-proportional.
+
+geometry [string(="")] (ZEDX)
+  define the position and the initial dimension of the zedx's window.
+
+indcfg [xyz(=0x111)]
+  define the number of spaces used by automatic C block indent (function
+  b_indent).
+  The x,y,z parameters are three digit (hexadecimal):
+  x: spaces within the same line preceeding "{"
+  y: spaces within the same line after "}"
+  z: spaces added after a line ending with "{" or removed before line
+     starting with "}"
+  note: the digit must be indicated as an hexadecimal number (0xnnn).
+
+indent [ON|off]
+  enable/disable auto-indent mode.
+
+jindent [value(=0)]
+  define the indent value in characters of the first line of a paragraph in 
+  document mode when reformatting paragraphs.
+
+lmargin [value(=0)]
+  define the left margin for document mode.
+
+maxdelbuf [value(=100)]
+  define the maximum number of lines saved in the delete buffer.
+
+nospace [ON|off]
+  enable/disable the automatic removing of the spaces and tabs at the end of 
+  the lines.
+  It is forced "on" using showmatch, document mode or color mode.
+
+pal1 ... pal14 [string] (ZEDX)
+  set the palette color indicated with the X-window syntax.
+
+rmargin [value(=79)]
+  define the right margin for document mode.
+
+rows [value(=0)]
+  number of rows of the screen. With the special value 0 Zed will 
+  determine it automatically.
+
+shiftlinux [on|OFF] (LINUX)
+  enable/disable the Linux kernel function TIOCLINUX for retrieving the 
+  status of SHIFT, CONTROL and ALT. This allows to distinguish for example 
+  arrows from shift-arrows.
+
+showmatch [ON|off]
+ enable/disable the highlight on the  parenthesis  corresponding  to  the  one 
+ under  the  cursor.  Enabling  showmatch  mode,  showtab  and   nospace   are 
+ automatically enabled.
+
+showtab [ON|off]
+ enables/disables the display of the TAB character as a single control code.
+ The full use  of  TAB  being  not  supported,  automatic  conversion  of  TAB 
+ characters into the proper number of space  characters  is  recommended  (see 
+ tabexpandl, tabexpandr and f_killtab); in case this was not acceptable  (e.g. 
+ Makefiles), Zed can display TABs as a control code characters without loosing 
+ any of his  features;  in  case  this  was  still  not  acceptable,  the  TAB 
+ characters can (showtab disabled) be displayed as the proper number of  space 
+ characters, but in this case the corrispondence between the  cursor  position 
+ and the character position in the memory buffers will  be  lost.  It  is  not 
+ possible to disable showtab when using showmatch, document  or  color  modes. 
+ This choice has been made in order to improve  memory  usage  and  processing 
+ speed.
+
+softret [value(=32)]
+ In document mode, sets the character to be used to distinguish rows that  are 
+ part of the same paragraph. This character is appended at  the  end  of  each 
+ line belonging to the same paragraph.
+ Default character is a space, so that Zed  documents  are  still  written  in 
+ plain ascii.
+ Warning: loading a document  file  with  zed  in  normal  mode  (and  nospace 
+ active), the default softret character (space) will be removed!
+
+streof [string(="<<< EOF >>>")]
+  Sets the string that indicates the end of file on the screen.
+
+streol [string(="\0A" UNIX, ="\0D\0A" MS-DOS)]
+  Sets the string that will be appended to each line when saving the file.
+
+strfnddef [string(="I")]
+  Sets the default options for the s_search function.
+
+strifnddef [string(="I")]
+  Sets the default options for the s_isearch function (interactive search).
+
+strmail [string(="Mail/tmp/snd." UNIX, ="golded.msg" MSDOS)
+ Sets the string that will be used to distinguish mail file to set  the  color 
+ mode. This string is searched (case sensitive) in the pathname of the file.
+
+strrpldef [string(="I")]
+  Sets the default options for the s_replace function.
+
+tabexpandl [on|off|2|3]
+  enable/disable the substitution of tab characters with spaces at load time.
+ Setting this variable to 2 or 3, the tab  expansions  are  executed  only  if 
+ filename  does  not  match  the  pattern:  "*[Mm]akefile*".  Setting  to   3, 
+ confirmation will be asked for.
+
+
+tabexpandr [ON|off]
+ enable/disable the substitution of tab  character  with  spaces  at  run-time 
+ (typing a tab will insert in the text the proper number of spaces).
+
+tabsize [8]
+ sets the tab size
+
+usrvar [value(=0)]
+  Sets the initial value of the a,b,c,d flags. The LSB 4 bit will specify the 
+  flags value in this order: a (bit 0), b (bit 1), c (bit 2), d(bit3).
+
+wholeline [on|OFF]
+ enable/disable the update of the screen by  outputting  whole  lines.  Useful 
+ only with special terminals  that  manage  EUC,  JIS  or  similar  multi-byte 
+ character format. Enabling this option, the refreshing of the screen will  be 
+ slowed down.
+
+wordwrap [value(=7)]
+ enable/disable the functions used to reformat the paragraph when the  current 
+ row exceeds the right margin.
+  bit 0 : simple/normal
+  bit 1 : j_dejust
+  bit 2 : j_format
+  bit 3 : j_justif
+  bit 4 : j_quoterem, j_quoteres
+ setting bit 0 to 0 forces a simple wordwrap that  moves  the  cursor  to  the 
+ next line only inserting characters at the end of line.
+ The functions will be executed in the following order: j_quoterem,  j_dejust, 
+ j_format, j_justif, j_quoteres.
+
+********************
+
+Functions:
+
+b_begin [^K^B]
+  Marks the start of the current selected block.
+
+b_blockdel [^K^Y, ^Canc]
+  Deletes the current selected block moving the contents in the delete buffer.
+
+b_cdrag [^K^A]
+  begins/ends the selection of a block by character dragging.
+
+b_clpcopy [@Ins and part of ^K^C, ^K^V, ^Ins]
+  Appends to the clipboard a copy of the current selected block. (Copy).
+
+b_clpcut [@Canc and part of ^K^V, #Canc]
+  Appends to the clipboard a copy of the current selected block deleting the 
+  original block. (Cut).
+
+b_clpdel [^K^P and part of ^K^R, ^K^W, #Canc, ^Ins]
+  Deletes the clipboard. This function has no effect if you're editing it.
+
+b_clpexport (ZEDX) [^K^T]
+ Exports the clipboard (from the "start clipboard" pointer)  to  the  X-Window 
+ clipboard. If the block is a column block, a header will be inserted 
+ so another zedx will import it correctly.
+
+b_clpexportd (ZEDX) [part of ^C^E]
+  As b_clpexport, but erasing the lines moved from the clipboard.
+
+b_clpexportdl (ZEDX) []
+  As b_clpexportd, but do not insert the header in case of column block.
+
+b_clpexportl (ZEDX) []
+  As b_clpexport, but do not insert the header in case of column block.
+
+b_clphere [part of ^K^C, ^K^V]
+ Moves the pointer "start clipboard" at the  end  of  the  current  clipboard. 
+ This is useful to preserve the clipboard contents during for example a  block 
+ copy.
+
+b_clpimport (ZEDX) [^K^O and part of ^C^P]
+  Imports the current X-Window clipboard and append it at the zed's clipboard.
+
+b_clpload [part of ^K^R]
+  Loads a file into the clipboard.
+
+b_clppaste [#Ins]
+  Paste the clipboard, from the "start clipboard" pointer, into the text in 
+  editing. Paste behaviour is diffent in "insert" and in "overwrite" modes.
+
+b_clppstd [part of ^K^C, ^K^V, ^K^R, ^C^P]
+  As b_clppaste, but erasing the lines moved from the clipboard.
+
+b_clpsave [part of ^K^W]
+ Saves the clipboard in a file. If the  file  already  exists,  the  user  can 
+ choose whether appending or overwriting the old file.
+
+b_clpzero [part of ^K^C, ^K^V, ^C^E, ^C^P]
+  Moves the pointer "start clipboard" at the start of the clipboard.
+
+b_cresize [part of #[^][down,up,left,right,pgup,pgdown,home,end]]
+ Extends the current selected block up to the cursor position.  This  function 
+ works with the  function  b_setpnt  that  sets  the  starting  point  of  the 
+ extension.
+
+b_deldelb []
+  Erases the delete buffer.
+
+b_end [^K^K]
+  Marks the end of the current selected block.
+
+b_fhide []
+  Hides the current selected block.
+
+b_fill [^K^F]
+ Fills the current selected block repeating the string inserted by  the  user. 
+ If the block isn't a column block only the characters different  from  spaces 
+ will be replaced.
+
+b_flipcase [^@3]
+  Toggles the case of the character within the current selected block.
+
+b_hide [^K^H]
+  Hides/shows the current selected block.
+
+b_indent [^K^I]
+  Reindents the current selected block considering it as a C source. The 
+  indenting behaviour is controlled by the indcfg variable.
+
+b_ishl []
+  Shifts left the contents of the current selected block.
+
+b_ishr []
+  Shifts right the contents of the current selected block.
+
+b_ldrag [^K^L]
+  begins/ends the selection of a block by whole-line dragging.
+
+b_resdelb [^K^U]
+  Restores the last row in the delete buffer and inserts it in the text in 
+  editing.
+
+b_rot13 [^K^O]
+  Encript or decript all characters within the  current  selected  block  with 
+  rot13.
+
+b_setnocd []
+  ends the selection of a block by character dragging (b_cdrag).
+
+b_setnold []
+  ends the selection of a block by whole-line dragging (b_ldrag).
+
+b_setnorm []
+  Sets the type of the block to normal (instead of column) (b_toggle).
+
+b_setpnt  [part of #[^][down,up,left,right,pgup,pgdown,home,end]]
+  Sets the point from which the block will be extended (works with b_creside).
+
+b_shl [@left]
+  Shifts left the rows that are part of the current selected block.
+
+b_shr [@right]
+  Shifts right the rows that are part of the current selected block.
+
+b_toggle [^K^N]
+  Toggles the type of the block from normal to column and viceversa.
+
+b_tolower [^@2]
+  Switchs to lower case all characters within the current selected block.
+
+b_toupper [^@1]
+  Switchs to upper case all characters within the current selected block.
+
+b_unsel []
+  Cancels the selection of the current block.
+
+c_down [down]
+  Moves down the cursor.
+
+c_left [left]
+  Moves left the cursor.
+
+c_right [right]
+  Moves right the cursor.
+
+c_up [up]
+  Moves up the cursor.
+
+e_abmacro [^S^A]
+  Cancels the recording of a macro started with e_stmacro or e_strecmacro.
+
+e_bkspc [backspace]
+  Erases the character on the left of the cursor (backspace).
+
+e_canc [canc]
+  Deletes the character under the cursor (delete).
+
+e_deind [^backspace]
+  Erases the space(s) at the start of the current line.
+
+e_deleol [^K^D]
+  Erases the characters from the cursor to the end of line.
+
+e_delline [^Y]
+  Erases the current line.
+
+e_enter [enter]
+ In overwrite mode moves the cursor at the start of the next line,  in  insert 
+ mode it puts the remaining of the current line (from the cursor  to  the  end 
+ of line) on a new line.
+ In document mode this function ends the paragraph.
+
+e_entwait [part of ^K^R, ^K^W]
+  Allows the user to insert a string in a dialog box. This is useful only 
+  within a macro.
+
+e_escape [escape]
+  Exits from the dialog or selection box deleting the function that raised it.
+
+e_hexcode [^C^H]
+  Inserts a string of characters in hexadecimal (two digit/character).
+
+e_hexopen [^N]
+ This function, within a file selection dialog or  selection  box,  opens  the 
+ selected file in hexdump mode.
+
+e_flipcase [@3]
+  Toggles the case of the character under the cursor.
+
+e_inscode [^C^I]
+ Inserts  characters  without  zed  interpretation  (e.g.  for  the  functions 
+ associated). The sequence is terminated by the Enter key.
+
+e_openall [^A]
+ This function, within a file selection dialog or  selection  box,  loads  all 
+ files selected.
+
+e_putcode [^C^C]
+  Inserts key codes for the command "key" of the configuration file. Ends with 
+  Enter key.
+
+e_recmacro [^S^R]
+  Records the macro you're creating.
+
+e_restore [^K^J]
+ Cancels the changes made to the current line.
+
+e_roopen
+ Opens the file in readonly mode (the file can be the destination  of  a  pipe 
+ but cannot be saved nor modified).
+
+e_senter [@enter]
+  As e_enter, but in document mode do not ends the paragraph.
+
+e_stmacro [^S^S]
+  Starts creating a macro. If you were already creating one, that one will be 
+  canceled.
+  Warning: shift_status are not managed with run-time macros.
+
+e_strecmcr []
+ If you're creating a macro, this'll be  saved,  else  a  new  macro  will  be 
+ created.
+
+e_tolower [@2]
+  Lowers the case of the letter under the cursor.
+
+e_toupper [@1]
+  Uppers the case of the letter under the cursor.
+
+e_wrmacro [^S^W]
+  Writes a macro appending it to a file to be used as a part of the 
+  configuration file.
+
+f_aconfig [^C^A]
+  Reads an additional file to add commands to the actual configuration.
+
+f_cconfig [^C^R]
+  Reloads the configuration file. Some variables aren't considered: 
+  e.g. font, geometry, color and palette under X-Window.
+
+f_chname [^K^E, ^F^E]
+  Changes the name of the current file.
+
+f_fileld [F3, ^F^O]
+  Loads a file in a new buffer. If the file is already in memory, this 
+  function is not executed.
+
+f_filesb [^F^U]
+ Loads a new file in the current buffer. If the  previous  file  was  modified 
+ but not saved, confirmation will be asked for. If  the  file  is  already  in 
+ memory, this function isn't executed.
+
+f_killtab [^K^T]
+ Eliminates all tabs present in current  file,  opened  with  tabexpandl  off, 
+ substituting they with spaces.
+
+f_select [part of F9]
+  executes a w_split or, if there isn't enought space,  a  f_fileld,  ensuring 
+  the presence of the new window.
+
+f_shell [@F D, @F O]
+  Executes a command throught a system shell.
+  Before executing the command, this susbstitutions are made:
+    %d : drive of the current file (MS-DOS only)
+    %t : path of the current file
+    %f : name of the current file (without path and extension)
+    %e : extension of the current file
+    %n : complete name of the file (without path)
+    %w : word where the cursor was.
+    %v : as %w but of the previous window (saved with w_winsave)
+    %p : pause before return to Zed
+    %r : pause before return to zed if the shell returns an error
+    %s : save all modified buffers before executing the shell
+    %k : as %s but when the shell terminates execution, all modified files are
+         reloaded. Not usable with %i or %a.
+    %x : write "Type exit to return to Zed" before executing the shell
+    %i : stdout and stderr of the command executed are redirected throw a pipe
+         in the current buffer. This is erased before the execution of the 
+         shell.
+    %a : as %i, but the buffer is not erased (append)
+    %o : executes the command in background (UNIX only)
+
+f_qreload [^F^R]
+ Reloads the current file. If this was modified, the user will  be  asked  for 
+ confirmation.
+
+f_reload []
+ Reloads the current file without confirmation.
+
+f_savemodif [^F^T, part of ^K^Z]
+  Saves all modified buffers in memory.
+
+f_savefile [F2, ^K^S, ^F^S, part of ^K^X,
+  Saves the file, even if it wasn't modified.
+
+g_c2eos [^Q^V]
+  The current line becomes the last row of the screen.
+
+g_c2mos [^Q^G]
+  The current line becomes the middle row of the screen.
+
+g_c2sos [^Q^T]
+  The current line becomes the first row of the screen.
+
+g_eob [^Q^K]
+  Moves the cursor to the end of the current selected block.
+
+g_eof [^Q^C, ^pgdown]
+  Moves the cursor to the end of the file.
+
+g_eol [end, ^Q^D]
+  Moves the cursor to the end of the current line.
+
+g_eos [^Q^X, ^end]
+  Moves the cursor to the last row in the screen.
+
+g_function [^Q^U]
+  Lists the definitions of the C functions found in the current buffer. 
+  Selecting a function will move the cursor to that function.
+
+g_go0 [^Q 0]
+  Moves the cursor to mark n.0.
+
+g_go1 [^Q 1]
+  Moves the cursor to mark n.1.
+
+g_go2 [^Q 2]
+  Moves the cursor to mark n.2.
+
+g_go3 [^Q 3]
+  Moves the cursor to mark n.3.
+
+g_line [^Q^L]
+  Moves the cursor to a line asked to the user.
+
+g_lmargin []
+  Moves the cursor at the left margin.
+
+g_nextpar [@down]
+  Moves the cursor to the next paragraph.
+
+g_nwr [^right]
+  Moves the cursor to the next word.
+
+g_parent [^Q [, ^Q ]]
+  Moves the cursor to the matching parenthesis.
+
+g_prevpar [@up]
+  Moves the cursor to the previous paragraph.
+
+g_pwr [^left]
+  Moves the cursor to the previous word.
+
+g_sdown [^up]
+  Scrolls down the text on the screen.
+
+g_set0 [^K 0]
+  Sets the position of the mark n.0.
+
+g_set1 [^K 1]
+  Sets the position of the mark n.1.
+
+g_set2 [^K 2]
+  Sets the position of the mark n.2.
+
+g_set3 [^K 3]
+  Sets the position of the mark n.3.
+
+g_sob [^Q^B]
+  Moves the cursor to the start of the current selected block.
+
+g_sof [^pgup]
+  Moves the cursor to the start of the file.
+
+g_sol [^Q^S, home]
+  Moves the cursor to the start of the current line.
+
+g_sos [^Q^E, ^home]
+  Moves the cursor to the first row on the screen.
+
+g_sup [^down]
+  Scrolls up the text on the screen.
+
+j_allhard [^O^P]
+ Transforms all the rows of all the paragraphs in single  rows,  deleting  the 
+ definition of the paragraphs.
+
+j_block2par [^O^G]
+ Creates and isolates a paragraph from  the  lines  selected  in  the  current 
+ block.
+
+j_center [^O^C]
+  Centers current line.
+
+j_dejust [^O^K, part of ^R]
+  Dejustifies current paragraph: deletes all spaces at the start of the rows 
+  and transforms all double spaces in single spaces.
+  This function is normally used  with  j_quoterem,  j_format,  j_justify  and 
+  j_quoteres (j_quoterem j_dejust j_format j_justif j_quoteres) to reformat  a 
+  paragraph.
+
+j_format [^O^F, part of ^R]
+  Formats a paragraph: aligns the rows of the current paragraph to the left 
+  margin and restructures the rows making sure not to exceed the right margin.
+
+j_hard [^O^H]
+  Ends the current paragraph at the current line. Following rows will be part 
+  of a new paragraph.
+
+j_indent [^O^I]
+ Asks for the number of indenting spaces for the first row of a paragraph.
+
+j_justif [^O^J, part of ^R]
+  Justifies current paragraph: adds spaces between words filling the rows from 
+  the left margin to the right margin.
+
+j_left [^O^S]
+  Aligns current line to the left.
+
+j_lmargin [^O^L]
+  Asks for the left margin.
+
+j_quoterem [part of ^R]
+ Removes the mail quote part (i.e. the left side) from the  current  paragraph 
+ to permit the correct reformat of it.
+
+j_quoteres [part of ^R]
+ Restore the mail quote part into the current paragraph. To be executed  after 
+ j_quoterem  and  the  desidered  paragraph  reformat   functions   (j_dejust, 
+ j_format, j_justif).
+
+j_right [^O^D]
+  Aligns current line to the right.
+
+j_rmargin [^O^R]
+  Asks for the right margin.
+
+j_soft [^O^A, part of ^B]
+  Joins the current paragraph with the next paragraph.
+
+l_autosave [^Q^P]
+  Sets the timeout of the autosave (see variable autosave).
+
+l_docset []
+  Activates document mode.
+
+l_doctog [^O^O]
+  Toggles between document and normal modes.
+
+l_idnset []
+  Activates auto-indenting.
+
+l_idntog []
+  Toggles between auto-indenting and normal modes.
+
+l_insset []
+  Activates insert mode.
+
+l_instog [ins]
+  Toggles between insert and overwrite modes.
+
+l_noop []
+  No operation.
+
+l_seta, l_setb, l_setc, l_setd
+  Sets the flags a, b, c, d.
+
+l_toga, l_togb, l_togc, l_togd
+  Toggles the flags a, b, c, d.
+
+l_shwtabs []
+  Activates the visualization of the tab characters.
+
+l_shwtabt []
+  Toggles the visualization of the tab characters.
+
+l_swmres []
+  Disables the visualization of the matching parentesis.
+
+l_swmtog []
+  Toggles the visualization of the matching parentesis.
+
+m_gotowin (ZEDX) []
+  Moves the cursor to the current position of the mouse's cursor within the 
+  current window.
+
+m_gotozed (ZEDX) []
+  Moves the cursor to the current position of the mouse's cursor even in another
+  window (of Zedx).
+
+p_down [pgdown]
+  Moves the cursor down one page.
+
+p_up [pgup]
+  Moves the cursor up one page.
+
+s_isearch [^Q^I]
+  Searches for a string interactively: searches for the string as soon as the 
+  user types new characters. The function ends with the e_escape function. 
+  A dialog box will be opened for the options (see s_search).
+
+s_replace [^Q^A]
+ Replaces a string with another string. The function will  open  three  dialog 
+ boxes: one for the searched string, one for the new string and  one  for  the 
+ options.
+  Options:
+    i: case insensitive search
+    s: search within the current block only
+    b: search backwards
+    e: search in the entire text (from the start of the file or from the 
+       start of the block).
+    a: do all the substitutions (instead of only one)
+    n: replace without confirmation
+
+s_sagain [^L]
+  Repeates the last search or replace.
+
+s_search [^Q^F]
+  Searches for a string. The function will open a dialog box to ask for the 
+  string to search. Hitting the tab key you'll able to change the options:
+    i: case insensitive search
+    s: search within the current block only
+    b: search backwards
+    e: search in the entire text (from the start of the file or from the 
+       start of the block).
+
+w_bufnext [^F^N]
+  Moves to the next buffer in memory.
+
+w_bufprev [^F^P]
+  Moves to the previous buffer in memory.
+
+w_bufsel [^F^M, @0]
+ Selects a buffer to edit from the memorized buffers.
+
+w_hide [^W^H]
+  Closes the current window, but maintains the buffer in memory.
+
+w_qquit [^K^Q, part of ^K^X]
+ Closes the current window and the related buffer, asking for  a  confirmation 
+ if the buffer was modified. If that was the only one window, shows  the  next 
+ buffer in that window; if that was the only one buffer in memory, exits  from 
+ zed.
+
+w_qquita [^Q^Q, @X, part of ^K^Z]
+  As w_qquit repeated for each buffer in memory.
+
+w_quit []
+  As w_qquit without confirmation.
+
+w_quita []
+  As w_qquita without confirmation.
+
+w_redrawall []
+  Redraws the screen.
+
+w_split [^W^S]
+  Splits the current window in two parts and opens a dialog box in the new part 
+  to open another file.
+
+w_winnext [^W^N]
+  Moves the cursor to the next window.
+
+w_winprev [^W^P]
+  Moves the cursor to the previous window.
+
+w_winres [^W^R]
+  Resizes vertically the current window.
+
+w_zoom [F5, ^W^Z]
+  Zooms/unzooms the current window, maintaining all the buffers in memory.
+
+w_zoomq [^W^U]
+ Erases  all  windows  and  buffers  that  aren't  the  current  window/buffer 
+ executing a w_qquit for every buffer.
+
+
+******************************************************************************
+
+Special file names:
+
+ In a dialog box where  a  filename  is  asked,  you  can  use  the  following 
+ shortcuts:
+
+  <c : selects the internal clipboard
+  <d : selects the internal delete buffer
+  <e : selects the system level configuration file. (/etc/zed(x)rc o
+       /usr/local/etc/zed(x)rc (UNIX) or zed.std (MS-DOS))
+  <g : selects the configuration file ( ~/.zedrc (UNIX) or zed.cfg (MS-DOS) )
+  <h : create the help reading configuration files
+  <i : selects one of the buffers in memory not visualized
+
+******************************************************************************
+
+Command line parameters:
+
+ Zed accepts as parameters all the  variable  named  in  the  "zed  variables" 
+ section preceeded by a '-' and followed by a space and the new value.
+Example:
+ If you want to activate autosave, type the following string:
+
+zed -autosave 30 filetoedit
+
+This will enable autosave, setting it to 30 seconds.
+
+You can also use the followings:
+
+  -h          : short help
+  +NNNN       : go to the row number NNNN
+  -add File   : loads before the default configuration file the file "File"
+  -def        : use system configuration file instead of local configuration
+  -cfg File   : use "File" as configuration file
+  --          : force end of parameters
+
+ You can specify  the  config  file  to  use  with  the  environment  variable 
+ ZEDCONFIG.
+
+******************************************************************************
+
+Status bar format
+
+/-------------- number of the current column
+|    /--------- number of the current row
+|    |      /-- total number of rows
+|    |      |
+|    |      |      /------------------ 'D' if in document mode
+|    |      |      |/----------------- 'N' if a new file
+|    |      |      ||
+|    |      |      || /--------------- 'M' if the file was modified
+|    |      |      || |/-------------- 'T' if tab expansion enabled
+|    |      |      || ||/------------- 'I' insert, 'S' overwrite
+|    |      |      || |||/------------ 'A' if in autoindent mode
+|    |      |      || ||||/----------- 'L' if dragging a block by wholeline
+|    |      |      || |||||/---------- 'C' if dragging a block by char
+|    |      |      || ||||||/--------- 'W' if showmath mode
+|    |      |      || |||||||/-------- 'R' if creating a macro
+|    |      |      || |||||||| /------ free virtual memory (MsDos)
+|    |      |      || |||||||| |    /- program name/version
+|    |      |      || |||||||| |    |        /- name of the file in editing
+v    v      v      vv vvvvvvvv v    v        v
+
+xxxx yyyyyy YYYYYY DN MTIALCWR 12M  Zed 0.99 C:\ZED\ZED.DOC
+
+******************************************************************************
+
+Standard table of colors
+
+The colors are specified as two hexadecimal digit: background (MSB) and 
+foreground (LSB). The available colors are:
+
+Foreground or background:
+
+ 0 : black
+ 1 : blue
+ 2 : green
+ 3 : cyan
+ 4 : red
+ 5 : magenta
+ 6 : brown
+ 7 : white
+
+Foreground:
+
+ 8 : gray
+ 9 : light blue
+ A : light green
+ B : light cyan
+ C : light red
+ D : light magenta
+ E : yellow
+ F : light white
+
+For the ansi monochrome, you can use the following attributes:
+(adding combines the effects)
+
+ 1 : high intensity
+ 2 : low intensity
+ 4 : underlined
+ 8 : blink
+16 : reverse
+
+******************************************************************************
+
+Document Mode
+
+   Document mode allows Zed to write documents in ascii  format,  so  directly 
+ viewable or printable without special filters.
+   In this mode Zed uses a character (defined through the variable softret, by 
+ default the space) to indicate that the current row proceeds in the  next  as 
+ a unique paragraph. If a row doesn't end with that  character,  that  row  is 
+ considered the last of the paragraph. This simple mechanism permits Zed to do 
+ functions such as justify, format and wordwrap normally absent in  an  editor 
+ (Zed is an editor, not a wordprocessor).
+
+ Warning: loading a document  file  with  zed  in  normal  mode  (and  nospace 
+ active), the default softret character (space) will be removed!
+
